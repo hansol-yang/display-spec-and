@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">display-spec-and</string>
+    <string name="screen_size_title">Screen Size:</string>
 </resources>
