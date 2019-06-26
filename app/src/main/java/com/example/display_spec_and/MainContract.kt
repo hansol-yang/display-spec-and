@@ -8,5 +8,6 @@ interface MainContract {
 
     interface View {
         fun showScreenSize()
+        fun showScreenDensity()
     }
 }

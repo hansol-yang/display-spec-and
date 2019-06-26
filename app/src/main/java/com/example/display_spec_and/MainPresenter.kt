@@ -4,6 +4,7 @@ class MainPresenter(private var view: MainContract.View?) :
     MainContract.Presenter {
     override fun onViewCreate() {
         view?.showScreenSize()
+        view?.showScreenDensity()
     }
 
     override fun onViewDestroy() {
