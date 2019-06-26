@@ -31,4 +31,18 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"/>
     </LinearLayout>
+    <LinearLayout android:layout_width="match_parent"
+                  android:layout_height="wrap_content"
+                  android:orientation="vertical">
+        <androidx.appcompat.widget.AppCompatEditText
+                android:id="@+id/edit_text_size"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:hint="Enter text size"/>
+        <TextView
+                android:id="@+id/tv_sample"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="This is a TextView."/>
+    </LinearLayout>
 </LinearLayout>
