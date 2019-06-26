@@ -1,10 +1,17 @@
 package com.example.display_spec_and
 
-import android.content.res.Configuration
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.DisplayMetrics
+import com.example.display_spec_and.extension.getActualTextSizeWithFormula
+import com.example.display_spec_and.extension.getScreenDensity
+import com.example.display_spec_and.extension.getScreenSize
+import com.jakewharton.rxbinding3.widget.textChanges
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.rxkotlin.addTo
+import io.reactivex.rxkotlin.subscribeBy
 import kotlinx.android.synthetic.main.activity_main.*
+import java.util.concurrent.TimeUnit
 
 class MainActivity :
     AppCompatActivity(),
@@ -14,11 +21,24 @@ class MainActivity :
         MainPresenter(this)
     }
 
+    private val disposables: CompositeDisposable by lazy { CompositeDisposable() }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        setupViews()
         presenter.onViewCreate()
+    }
+
+    override fun onPause() {
+        super.onPause()
+        finish()
+    }
+
+    override fun onDestroy() {
+        presenter.onViewDestroy()
+        super.onDestroy()
     }
 
     override fun showScreenSize() {
@@ -29,35 +49,26 @@ class MainActivity :
         tv_screen_density.text = getScreenDensity()
     }
 
-    override fun onDestroy() {
-        presenter.onViewDestroy()
-        super.onDestroy()
+    override fun showScaledDensity() {
+        tv_scaled_density.text = resources.displayMetrics.scaledDensity.toString()
     }
 
-    private fun getScreenSize(): String =
-        when (resources.configuration.screenLayout and Configuration.SCREENLAYOUT_SIZE_MASK) {
-            Configuration.SCREENLAYOUT_SIZE_SMALL -> "Small"
-            Configuration.SCREENLAYOUT_SIZE_NORMAL -> "Normal"
-            Configuration.SCREENLAYOUT_SIZE_LARGE -> "Large"
-            Configuration.SCREENLAYOUT_SIZE_XLARGE -> "X-Large"
-            else -> "ERROR"
-        }
+    private fun setupViews() {
+        edit_text_size
+            .textChanges()
+            .skipInitialValue()
+            .debounce(500, TimeUnit.MILLISECONDS)
+            .filter { it.isNotEmpty() }
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribeBy {
+                val textSize = it.toString().toFloat()
+                tv_sample_title.textSize = textSize
+                tv_actual_text_size.apply {
+                    this.textSize = textSize
+                    text = getActualTextSizeWithFormula(textSize)
+                }
 
-    private fun getScreenDensity(): String {
-        val density = resources.displayMetrics.density
-
-        return if (density == 0.75f) {
-            "LDPI"
-        } else if (density >= 1.0f && density < 1.5f) {
-            "MDPI"
-        } else if (density == 1.5f) {
-            "HDPI"
-        } else if (density > 1.5f && density <= 2.0f) {
-            "XHDPI"
-        } else if (density > 2.0f && density <= 3.0f) {
-            "XXHDPI"
-        } else {
-            "XXXHDPI"
-        }
+            }
+            .addTo(disposables)
     }
 }
