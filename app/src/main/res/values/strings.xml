@@ -1,5 +1,12 @@
 <resources>
     <string name="app_name">display-spec-and</string>
-    <string name="screen_size_title">Screen Size:</string>
-    <string name="screen_density_title">Screen Density:</string>
+    <string name="screen_size_title">Screen Size: </string>
+    <string name="screen_density_title">Screen Density: </string>
+    <string name="edit_text_size_hint">Enter text size</string>
+    <string name="unit_sp">sp</string>
+    <string name="text_sample">The actual text size is </string>
+    <string name="scaled_density_title">Scaled Density:</string>
+    <string name="scaled_density_desc">(The value based on user\'s preference for the font size will affect the
+        actual text size)
+    </string>
 </resources>
